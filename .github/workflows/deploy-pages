@@ -1,0 +1,153 @@
+name: Deploy PrimeShow Entertainment
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - "primeshow-entertainment/**"
+      - ".github/workflows/deploy-pages.yml"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: pages
+  cancel-in-progress: false
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+          cache-dependency-path: primeshow-entertainment/package-lock.json
+
+      - name: Install dependencies
+        working-directory: primeshow-entertainment
+        run: npm ci --no-audit --no-fund
+
+      - name: Prepare clean static export
+        working-directory: primeshow-entertainment
+        shell: bash
+        run: |
+          if [ -d db ]; then mv db /tmp/primeshow-db; fi
+          if [ -d examples ]; then mv examples /tmp/primeshow-examples; fi
+
+          cat > next.config.mjs <<'NEXTCONFIG'
+          const nextConfig = {
+            output: 'export',
+            images: { unoptimized: true },
+            trailingSlash: true,
+            poweredByHeader: false,
+          };
+
+          export default nextConfig;
+          NEXTCONFIG
+
+          cat > tsconfig.json <<'TSCONFIG'
+          {
+            "compilerOptions": {
+              "target": "ES2017",
+              "lib": ["dom", "dom.iterable", "esnext"],
+              "allowJs": true,
+              "skipLibCheck": true,
+              "strict": true,
+              "noEmit": true,
+              "esModuleInterop": true,
+              "module": "esnext",
+              "moduleResolution": "bundler",
+              "resolveJsonModule": true,
+              "isolatedModules": true,
+              "jsx": "react-jsx",
+              "incremental": true,
+              "plugins": [{ "name": "next" }],
+              "paths": { "@/*": ["./*"] }
+            },
+            "include": [
+              "next-env.d.ts",
+              "app/**/*.js",
+              "app/**/*.jsx",
+              "app/**/*.ts",
+              "app/**/*.tsx",
+              "components/**/*.js",
+              "components/**/*.jsx",
+              "components/**/*.ts",
+              "components/**/*.tsx",
+              "content/**/*.js",
+              "content/**/*.jsx",
+              "content/**/*.ts",
+              "content/**/*.tsx",
+              "hooks/**/*.js",
+              "hooks/**/*.jsx",
+              "hooks/**/*.ts",
+              "hooks/**/*.tsx",
+              "lib/**/*.js",
+              "lib/**/*.jsx",
+              "lib/**/*.ts",
+              "lib/**/*.tsx",
+              ".next/types/**/*.ts"
+            ],
+            "exclude": [
+              "node_modules",
+              "db",
+              "examples",
+              "build",
+              "scripts",
+              "tests",
+              "worker",
+              "drizzle",
+              "vite.config.ts",
+              "drizzle.config.ts"
+            ]
+          }
+          TSCONFIG
+
+          for file in app/manifest.js app/robots.js app/sitemap.js; do
+            if [ -f "$file" ] && ! grep -q 'export const dynamic' "$file"; then
+              sed -i '1i export const dynamic = "force-static";' "$file"
+            fi
+          done
+
+      - name: Build static website
+        working-directory: primeshow-entertainment
+        env:
+          NEXT_TELEMETRY_DISABLED: "1"
+          NEXT_PUBLIC_SITE_URL: "https://primeshowentertainment.github.io"
+        run: npx next build
+
+      - name: Verify static export
+        shell: bash
+        run: |
+          test -f primeshow-entertainment/out/index.html
+          test -d primeshow-entertainment/out/_next
+          grep -qi "PrimeShow" primeshow-entertainment/out/index.html
+          touch primeshow-entertainment/out/.nojekyll
+          echo "PrimeShow static export verified."
+
+      - name: Configure GitHub Pages
+        uses: actions/configure-pages@v5
+
+      - name: Upload Pages artifact
+        uses: actions/upload-pages-artifact@v4
+        with:
+          path: primeshow-entertainment/out
+
+  deploy:
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    runs-on: ubuntu-latest
+    needs: build
+    steps:
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4
