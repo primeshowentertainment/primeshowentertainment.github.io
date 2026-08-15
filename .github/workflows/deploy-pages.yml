@@ -121,7 +121,7 @@ jobs:
         working-directory: primeshow-entertainment
         env:
           NEXT_TELEMETRY_DISABLED: "1"
-          NEXT_PUBLIC_SITE_URL: "https://primeshowentertainment.github.io"
+          NEXT_PUBLIC_SITE_URL: "https://primeshowentertainment.com"
         run: npx next build
 
       - name: Verify static export
