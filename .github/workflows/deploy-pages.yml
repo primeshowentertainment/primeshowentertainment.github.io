@@ -117,13 +117,13 @@ jobs:
             fi
           done
 
-       - name: Build static website
-         working-directory: primeshow-entertainment
-         env:
+      - name: Build static website
+        working-directory: primeshow-entertainment
+        env:
           NEXT_TELEMETRY_DISABLED: "1"
           NEXT_PUBLIC_SITE_URL: "https://primeshowentertainment.com"
           NEXT_PUBLIC_GA_MEASUREMENT_ID: "G-E6X7BD97WP"
-         run: npx next build
+        run: npx next build
 
       - name: Verify static export
         shell: bash
