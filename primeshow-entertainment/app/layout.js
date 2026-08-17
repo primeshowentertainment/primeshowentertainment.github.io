@@ -36,12 +36,62 @@ export const viewport = {
   themeColor: "#050403",
 };
 
+const organizationId = absoluteUrl("/#organization");
+const websiteId = absoluteUrl("/#website");
+
 const organizationSchema = {
   "@context": "https://schema.org",
   "@type": "Organization",
-  name:siteConfig.name,url:siteConfig.url,logo:absoluteUrl("/images/primeshow-logo.png"),description:siteConfig.description,address:{"@type":"PostalAddress",streetAddress:"Plot No. 5, Ganesh Nagar Colony, Kuntloor, Hayathnagar",addressLocality:"Hyderabad",addressRegion:"Telangana",postalCode:"501505",addressCountry:"IN"},sameAs:publicSocialProfiles,
+  "@id": organizationId,
+  name: siteConfig.name,
+  url: siteConfig.url,
+
+  logo: {
+    "@type": "ImageObject",
+    url: absoluteUrl("/images/primeshow-logo.png"),
+    contentUrl: absoluteUrl("/images/primeshow-logo.png"),
+    caption: siteConfig.name
+  },
+
+  description: siteConfig.description,
+
+  address: {
+    "@type": "PostalAddress",
+    streetAddress:
+      "Plot No. 5, Ganesh Nagar Colony, Kuntloor, Hayathnagar",
+    addressLocality: "Hyderabad",
+    addressRegion: "Telangana",
+    postalCode: "501505",
+    addressCountry: "IN"
+  },
+
+  sameAs: publicSocialProfiles,
+
+  ...(siteConfig.email
+    ? {
+        email: siteConfig.email
+      }
+    : {}),
+
+  ...(siteConfig.phone
+    ? {
+        telephone: siteConfig.phone
+      }
+    : {})
 };
-const websiteSchema={"@context":"https://schema.org","@type":"WebSite",name:siteConfig.name,url:siteConfig.url,inLanguage:"en-IN"};
+
+const websiteSchema = {
+  "@context": "https://schema.org",
+  "@type": "WebSite",
+  "@id": websiteId,
+  name: siteConfig.name,
+  url: siteConfig.url,
+  inLanguage: "en-IN",
+
+  publisher: {
+    "@id": organizationId
+  }
+};
 
 const themeInit = `(function(){try{var t=localStorage.getItem('primeshow-theme');if(t!=='light'&&t!=='dark')t='dark';document.documentElement.dataset.theme=t;document.documentElement.style.colorScheme='dark';}catch(e){document.documentElement.dataset.theme='dark';document.documentElement.style.colorScheme='dark';}})();`;
 
