@@ -11,7 +11,7 @@ export const siteConfig = {
   name: "PrimeShow Entertainment",
   legalName: "PrimeShow Entertainment",
   url: siteUrl.replace(/\/$/, ""),
-  description: "PrimeShow Entertainment is an Indian film production and distribution company creating ambitious stories for audiences worldwide.",
+  description: "PrimeShow Entertainment is an Indian film production, distribution and exhibition company creating ambitious cinema for audiences across India and worldwide.",
   locale: "en_IN",
   location: "Plot No. 5, Ganesh Nagar Colony, Kuntloor, Hayathnagar, Ranga Reddy, Hyderabad, Telangana, 501505, India",
   locationLines: [
