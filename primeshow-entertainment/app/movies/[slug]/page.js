@@ -6,9 +6,18 @@ import JsonLd from "@/components/JsonLd";import {absoluteUrl} from "@/content/si
 export function generateStaticParams() { return movies.filter(movie => movie.hasDetailPage !== false).map(movie => ({ slug: movie.slug })); }
 
 export async function generateMetadata({ params }) {
-  const { slug } = await params; const movie = getMovieBySlug(slug);
+  const { slug } = await params;
+  const movie = getMovieBySlug(slug);
+
   if (!movie || movie.hasDetailPage === false) return {};
-  return createMetadata({title: movie.seoTitle || movie.title,description: movie.synopsis,path:`/movies/${movie.slug}`,image: movie.heroImage || movie.poster || "/images/poster-sheet.webp",type:"video.movie"});
+
+  return createMetadata({
+    title: movie.seoTitle || movie.title,
+    description: movie.seoDescription || movie.synopsis,
+    path: `/movies/${movie.slug}`,
+    image: movie.heroImage || movie.poster || "/images/poster-sheet.webp",
+    type: "video.movie"
+  });
 }
 
 export default async function MoviePage({ params }) {
