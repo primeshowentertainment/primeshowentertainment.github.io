@@ -2,6 +2,8 @@ export const movies = [
   {
     slug: "hanuman",
     title: "HanuMan",
+    seoTitle: "HanuMan (2024) — Official Movie",
+    seoDescription: "Official PrimeShow Entertainment page for HanuMan (2024), the Telugu superhero fantasy film set in Anjanadri. Explore the synopsis, cast, gallery and official trailer.",
     year: "2024",
     releaseDate: "2024-01-12",
     language: "Telugu",
@@ -49,6 +51,8 @@ export const movies = [
   {
     slug: "syg",
     title: "Sambarala Yeti Gattu",
+    seoTitle: "Sambarala Yeti Gattu (SYG) — Official Movie",
+seoDescription: "Official PrimeShow Entertainment page for Sambarala Yeti Gattu (SYG), a Pan-India multilingual film currently in post-production. Watch the official teaser and follow project updates.",
     year: "TBA",
     releaseDate: null,
     language: "Multilingual",
@@ -91,6 +95,8 @@ export const movies = [
   {
     slug: "brb",
     title: "Billa Ranga Baasha",
+    seoTitle: "Billa Ranga Baasha (BRB) — Official Movie",
+seoDescription: "Official PrimeShow Entertainment page for Billa Ranga Baasha (BRB), a Pan-India multilingual film currently in production. Watch the concept teaser and follow official project updates.",
     year: "TBA",
     releaseDate: null,
     language: "Multilingual",
