@@ -117,7 +117,7 @@ jobs:
             fi
           done
 
-           - name: Build static website
+        - name: Build static website
         working-directory: primeshow-entertainment
         env:
           NEXT_TELEMETRY_DISABLED: "1"
