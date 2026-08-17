@@ -15,7 +15,7 @@ export const metadata = {
     template: "%s | PrimeShow Entertainment",
   },
   description:
-    "PrimeShow Entertainment is an Indian film production and distribution company creating ambitious stories for audiences worldwide.",
+    siteConfig.description,
   alternates: { canonical: absoluteUrl("/") },
   openGraph: {
     title: "PrimeShow Entertainment",
